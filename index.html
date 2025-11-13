@@ -86,7 +86,8 @@ function round2(x){return Math.round(x*100)/100}
 function berechne(){
   const profil=document.getElementById("profil").value;
   const satz=get("steuersatz")/100;
-  const caps2025={group:471.32,care:99.32}, caps2026={group:496.97,care:104.63};
+  // ✅ Neue Höchstwerte 2026
+  const caps2025={group:471.32,care:99.32}, caps2026={group:508.59,care:104.63};
   const f=felder;
   let sum25=0,sum26=0;
   const getVals=y=>({
@@ -171,8 +172,11 @@ berechne();
 <div class="note">
 Der Rechner wurde von Jürgen Matterne erstellt. Es wurde Sorgfalt verwandt, es kann aber keine Gewähr übernommen werden.  
 Fragen bitte an: <a href="mailto:Juergen.Matterne@vk-makler.de">Juergen.Matterne@vk-makler.de</a> stellen.  
-Verwendete Rahmendaten: Durchschnittlicher GKV-Höchstbeitrag 2025 1.174,16 € (kinderlos). 2026 1.261,31 €. Maximale Beitragsbemessung 2025 5.512,50 € und 2026 5.812,50 €. Arbeitgeber Höchstzuschuss 2025 471,32 € und Pflegepflicht 99,32 €. In 2026 496,97 € und Pflegepflicht 104,63 €. Steuerlich ansetzbar: GesundheitVARIO 91,36 %, Pflegepflicht 100 %.
+Verwendete Rahmendaten: Durchschnittlicher GKV-Höchstbeitrag 2025 1.174,16 € (kinderlos). 2026 1.261,31 €. Maximale Beitragsbemessung 2025 5.512,50 € und 2026 5.812,50 €.  
+Arbeitgeber Höchstzuschuss 2025 471,32 € und Pflegepflicht 99,32 €.  
+In 2026 508,59 € und Pflegepflicht 104,63 €. Steuerlich ansetzbar: GesundheitVARIO 91,36 %, Pflegepflicht 100 %.
 </div>
 </div>
 </body>
 </html>
+
