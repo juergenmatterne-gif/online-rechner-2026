@@ -3,180 +3,166 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Nettorechner 2025/2026 – Arbeitgeberzuschuss & Nachsteuervergleich</title>
+<title>Nettorechner – Tarifgegenüberstellung</title>
+
 <style>
 body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:#f8fafc;margin:0;padding:1rem;color:#0b1020}
-.container{max-width:1100px;margin:0 auto;background:#fff;border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,.1);padding:20px}
-h1{text-align:center;color:#1d4ed8}
-.grid3{display:grid;grid-template-columns:250px 1fr 1fr}
+.container{max-width:1100px;margin:auto;background:#fff;border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,.1);padding:20px}
+h1{text-align:center;color:#1d4ed8;margin-bottom:10px}
+
+.grid3{display:grid;grid-template-columns:280px 1fr 1fr}
 .hdr{padding:10px;font-weight:600;color:#fff;text-align:center}
-.hdr2025{background:#059669}
-.hdr2026{background:#6d28d9}
+.hdrL{background:#059669}
+.hdrR{background:#6d28d9}
+
 .rowlabel{padding:8px;font-weight:600;border-top:1px solid #e5e7eb;background:#eff6ff}
 .cell{border-top:1px solid #e5e7eb;padding:8px;text-align:right}
-input{border:1px solid #e2e8f0;border-radius:8px;padding:6px 8px;width:100px;text-align:right}
+
+input{border:1px solid #e2e8f0;border-radius:8px;padding:6px 8px;width:120px;text-align:right}
+input.text{width:220px;text-align:left}
 input.red{color:#dc2626;border-color:#fecaca;font-weight:700}
+
 select{padding:6px;border-radius:8px}
 button{padding:8px 14px;border:none;border-radius:8px;background:#2563eb;color:#fff;font-weight:600;cursor:pointer}
 button:hover{background:#1e40af}
-.note{font-size:12px;margin-top:20px;color:#334155}
-.bg25{background:#d1fae5}
-.bg26{background:#ede9fe}
+
+.bgL{background:#d1fae5}
+.bgR{background:#ede9fe}
 .bold{font-weight:700}
+
+.note{font-size:12px;color:#334155;margin-top:20px}
 </style>
 </head>
+
 <body>
 <div class="container">
-<h1>Nettorechner 2025/2026</h1>
 
-<!-- Eingaben Kopf -->
-<div style="display:flex;flex-wrap:wrap;gap:10px;align-items:end;justify-content:space-between;margin-bottom:10px">
-  <div><label>Name<br><input type="text" id="name" style="text-align:left;width:200px"></label></div>
-  <div><label>Vertragsnummer<br><input type="text" id="vertrag" style="text-align:left;width:120px"></label></div>
-  <div><label>Datum<br><input type="date" id="datum" style="text-align:left;width:150px"></label></div>
-  <div><label>Profil<br>
-    <select id="profil">
-      <option value="Arbeitnehmer">Arbeitnehmer</option>
-      <option value="Selbstständig">Selbstständig</option>
-    </select>
-  </label></div>
+<h1>Tarifgegenüberstellung</h1>
+
+<!-- Kopf -->
+<div style="display:flex;flex-wrap:wrap;gap:10px;align-items:end;justify-content:space-between;margin-bottom:12px">
+  <div>
+    <label>Linker Tarif<br>
+      <input class="text" id="labelL" value="Tarif A / Bestand">
+    </label>
+  </div>
+  <div>
+    <label>Rechter Tarif<br>
+      <input class="text" id="labelR" value="Tarif B / Vorschlag">
+    </label>
+  </div>
+  <div>
+    <label>Profil<br>
+      <select id="profil">
+        <option>Arbeitnehmer</option>
+        <option>Selbstständig</option>
+      </select>
+    </label>
+  </div>
   <button onclick="window.print()">Drucken</button>
 </div>
 
 <!-- Tabelle -->
 <div class="grid3">
   <div class="hdr" style="background:#1d4ed8"></div>
-  <div class="hdr hdr2025">2025</div>
-  <div class="hdr hdr2026">2026</div>
-
-  <!-- Eingabefelder -->
-  <script>
-  const felder = [
-    "GesundheitVARIO inkl. RZ/GZ",
-    "Beitragsentlastung / BEA",
-    "Pflegepflichtversicherung",
-    "VARIOAmbulant Plus",
-    "VARIOKlinik Plus",
-    "VARIOZahn Plus",
-    "Krankentagegeld",
-    "Kurtagegeld",
-    "KHT",
-    "Pflegezusatzversicherung"
-  ];
-  document.write(felder.map(f=>`
-    <div class='rowlabel'>${f}</div>
-    <div class='cell bg25'><input type='number' id='a2025_${f}' value='0' min='0'></div>
-    <div class='cell bg26'><input type='number' id='a2026_${f}' value='0' min='0'></div>
-  `).join(""));
-  </script>
-
-  <!-- Steuer -->
-  <div class="rowlabel" style="color:#dc2626">Grenzsteuersatz</div>
-  <div class="cell" style="text-align:right"><input type="number" id="steuersatz" class="red" value="42"></div>
-  <div class="cell"></div>
-</div>
-
-<!-- Ergebnisse -->
-<div id="ergebnis" style="margin-top:20px;font-size:15px"></div>
+  <div class="hdr hdrL" id="hdrL">Tarif A</div>
+  <div class="hdr hdrR" id="hdrR">Tarif B</div>
 
 <script>
-function get(id){return parseFloat(document.getElementById(id)?.value||"0")}
-function round2(x){return Math.round(x*100)/100}
+const felder=[
+["g","GesundheitVARIO inkl. RZ/GZ"],
+["bea","Beitragsentlastung / BEA"],
+["ppv","Pflegepflichtversicherung"],
+["vap","VARIOAmbulant Plus"],
+["vkp","VARIOKlinik Plus"],
+["vzp","VARIOZahn Plus"],
+["ktg","Krankentagegeld"],
+["kur","Kurtagegeld"],
+["kht","KHT"],
+["pzv","Pflegezusatzversicherung"]
+];
 
-function berechne(){
-  const profil=document.getElementById("profil").value;
-  const satz=get("steuersatz")/100;
-  // ✅ Neue Höchstwerte 2026
-  const caps2025={group:471.32,care:99.32}, caps2026={group:508.59,care:104.63};
-  const f=felder;
-  let sum25=0,sum26=0;
-  const getVals=y=>({
-    g:get(`a${y}_GesundheitVARIO inkl. RZ/GZ`),
-    bea:get(`a${y}_Beitragsentlastung / BEA`),
-    ppv:get(`a${y}_Pflegepflichtversicherung`),
-    vap:get(`a${y}_VARIOAmbulant Plus`),
-    vkp:get(`a${y}_VARIOKlinik Plus`),
-    vzp:get(`a${y}_VARIOZahn Plus`),
-    ktg:get(`a${y}_Krankentagegeld`),
-    kur:get(`a${y}_Kurtagegeld`),
-    kht:get(`a${y}_KHT`),
-    pzv:get(`a${y}_Pflegezusatzversicherung`)
-  });
-  const v25=getVals(2025),v26=getVals(2026);
-  sum25=Object.values(v25).reduce((a,b)=>a+b,0);
-  sum26=Object.values(v26).reduce((a,b)=>a+b,0);
+document.write(felder.map(f=>`
+<div class="rowlabel">${f[1]}</div>
+<div class="cell bgL"><input type="number" id="L_${f[0]}" value="0"></div>
+<div class="cell bgR"><input type="number" id="R_${f[0]}" value="0"></div>
+`).join(""));
+</script>
 
-  const abz25=0.9136*(v25.g+v25.bea)+v25.ppv;
-  const abz26=0.9136*(v26.g+v26.bea)+v26.ppv;
+<!-- Steuer -->
+<div class="rowlabel" style="color:#dc2626">Grenzsteuersatz</div>
+<div class="cell"><input id="steuer" class="red" value="42"></div>
+<div class="cell"></div>
+</div>
 
-  const gruppe25=v25.g+v25.bea+v25.vap+v25.vkp+v25.vzp+v25.ktg+v25.kur+v25.kht+v25.pzv;
-  const gruppe26=v26.g+v26.bea+v26.vap+v26.vkp+v26.vzp+v26.ktg+v26.kur+v26.kht+v26.pzv;
-  const ag25=Math.min(0.5*gruppe25,caps2025.group)+Math.min(0.5*v25.ppv,caps2025.care);
-  const ag26=Math.min(0.5*gruppe26,caps2026.group)+Math.min(0.5*v26.ppv,caps2026.care);
+<!-- Ergebnis -->
+<div id="out" style="margin-top:20px"></div>
 
-  let ausgabe="";
-  if(profil==="Arbeitnehmer"){
-    const brutto25=sum25-ag25, brutto26=sum26-ag26;
-    const abzAN25=Math.max(0,abz25-ag25), abzAN26=Math.max(0,abz26-ag26);
-    const nach25=brutto25-(satz*abzAN25), nach26=brutto26-(satz*abzAN26);
-    ausgabe+=`
-    <div class='grid3'>
-      <div class='rowlabel'>Gesamtbeitrag ohne Arbeitgeberanteil</div>
-      <div class='cell bg25'>${sum25.toFixed(2)} €</div>
-      <div class='cell bg26'>${sum26.toFixed(2)} €</div>
+<script>
+function n(v){return parseFloat(v)||0}
+function f(x){return x.toLocaleString("de-DE",{minimumFractionDigits:2,maximumFractionDigits:2})}
 
-      <div class='rowlabel'>abzgl. Arbeitgeberzuschuss</div>
-      <div class='cell bg25'>-${ag25.toFixed(2)} €</div>
-      <div class='cell bg26'>-${ag26.toFixed(2)} €</div>
+function calc(){
+ const profil=document.getElementById("profil").value;
+ const s=n(steuer.value)/100;
 
-      <div class='rowlabel'>Gesamtbeitrag vor Steuer</div>
-      <div class='cell bg25'>${brutto25.toFixed(2)} €</div>
-      <div class='cell bg26'>${brutto26.toFixed(2)} €</div>
+ const L={},R={};
+ felder.forEach(f=>{
+   L[f[0]]=n(document.getElementById("L_"+f[0]).value);
+   R[f[0]]=n(document.getElementById("R_"+f[0]).value);
+ });
 
-      <div class='rowlabel bold'>Gesamtbeitrag nach Steuer</div>
-      <div class='cell bold' style='background:#047857;color:white'>${nach25.toFixed(2)} €</div>
-      <div class='cell bold' style='background:#6d28d9;color:white'>${nach26.toFixed(2)} €</div>
+ const sumL=Object.values(L).reduce((a,b)=>a+b,0);
+ const sumR=Object.values(R).reduce((a,b)=>a+b,0);
 
-      <div class='rowlabel'>Mehrbeitrag vor Steuer</div><div></div>
-      <div class='cell bold'>${(brutto26-brutto25).toFixed(2)} €</div>
+ const abzL=0.9136*(L.g+L.bea)+L.ppv;
+ const abzR=0.9136*(R.g+R.bea)+R.ppv;
 
-      <div class='rowlabel'>Mehrbeitrag nach Steuer</div><div></div>
-      <div class='cell bold'>${(nach26-nach25).toFixed(2)} €</div>
-    </div>`;
-  } else {
-    const nach25=sum25-(satz*abz25), nach26=sum26-(satz*abz26);
-    ausgabe+=`
-    <div class='grid3'>
-      <div class='rowlabel'>Gesamtbeitrag vor Steuer</div>
-      <div class='cell bg25'>${sum25.toFixed(2)} €</div>
-      <div class='cell bg26'>${sum26.toFixed(2)} €</div>
+ const caps={group:508.59,care:104.63};
 
-      <div class='rowlabel bold'>Gesamtbeitrag nach Steuer</div>
-      <div class='cell bold' style='background:#047857;color:white'>${nach25.toFixed(2)} €</div>
-      <div class='cell bold' style='background:#6d28d9;color:white'>${nach26.toFixed(2)} €</div>
+ const grpL=L.g+L.bea+L.vap+L.vkp+L.vzp+L.ktg+L.kur+L.kht+L.pzv;
+ const grpR=R.g+R.bea+R.vap+R.vkp+R.vzp+R.ktg+R.kur+R.kht+R.pzv;
 
-      <div class='rowlabel'>Mehrbeitrag vor Steuer</div><div></div>
-      <div class='cell bold'>${(sum26-sum25).toFixed(2)} €</div>
+ const agL=Math.min(0.5*grpL,caps.group)+Math.min(0.5*L.ppv,caps.care);
+ const agR=Math.min(0.5*grpR,caps.group)+Math.min(0.5*R.ppv,caps.care);
 
-      <div class='rowlabel'>Mehrbeitrag nach Steuer</div><div></div>
-      <div class='cell bold'>${(nach26-nach25).toFixed(2)} €</div>
-    </div>`;
-  }
-  document.getElementById("ergebnis").innerHTML=ausgabe;
+ let nettoL,nettoR;
+
+ if(profil==="Arbeitnehmer"){
+   nettoL=(sumL-agL)-(s*Math.max(0,abzL-agL));
+   nettoR=(sumR-agR)-(s*Math.max(0,abzR-agR));
+ } else {
+   nettoL=sumL-(s*abzL);
+   nettoR=sumR-(s*abzR);
+ }
+
+ const diff=nettoR-nettoL;
+
+ document.getElementById("hdrL").innerText=labelL.value;
+ document.getElementById("hdrR").innerText=labelR.value;
+
+ out.innerHTML=`
+ <div class="grid3">
+   <div class="rowlabel bold">Gesamtbetrag nach Steuer</div>
+   <div class="cell bold bgL">${f(nettoL)} €</div>
+   <div class="cell bold bgR">${f(nettoR)} €</div>
+
+   <div class="rowlabel bold">Gutschrift nach Steuer</div>
+   <div></div>
+   <div class="cell bold">${f(diff)} €</div>
+ </div>`;
 }
 
-document.querySelectorAll("input,select").forEach(e=>e.addEventListener("input",berechne));
-berechne();
+document.querySelectorAll("input,select").forEach(e=>e.addEventListener("input",calc));
+calc();
 </script>
 
 <div class="note">
-Der Rechner wurde von Jürgen Matterne erstellt. Es wurde Sorgfalt verwandt, es kann aber keine Gewähr übernommen werden.  
-Fragen bitte an: <a href="mailto:Juergen.Matterne@vk-makler.de">Juergen.Matterne@vk-makler.de</a> stellen.  
-Verwendete Rahmendaten: Durchschnittlicher GKV-Höchstbeitrag 2025 1.174,16 € (kinderlos). 2026 1.261,31 €. Maximale Beitragsbemessung 2025 5.512,50 € und 2026 5.812,50 €.  
-Arbeitgeber Höchstzuschuss 2025 471,32 € und Pflegepflicht 99,32 €.  
-In 2026 508,59 € und Pflegepflicht 104,63 €. Steuerlich ansetzbar: GesundheitVARIO 91,36 %, Pflegepflicht 100 %.
+Der Rechner wurde von Jürgen Matterne erstellt. Es wurde Sorgfalt verwandt, es kann aber keine Gewähr übernommen werden.
+Fragen bitte an: <a href="mailto:Juergen.Matterne@vk-makler.de">Juergen.Matterne@vk-makler.de</a><br>
+Arbeitgeber-Höchstzuschuss (AN): 508,59 € KV / 104,63 € Pflege. Steuerlich ansetzbar: GesundheitVARIO 91,36 %, Pflegepflicht 100 %.
 </div>
+
 </div>
 </body>
 </html>
-
