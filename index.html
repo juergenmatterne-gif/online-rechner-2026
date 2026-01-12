@@ -1,170 +1,246 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Nettorechner – Tarifgegenüberstellung</title>
 
 <style>
-body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:#f8fafc;margin:0;padding:1rem;color:#0b1020}
-.container{max-width:1100px;margin:auto;background:#fff;border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,.1);padding:20px}
-h1{text-align:center;color:#1d4ed8;margin-bottom:10px}
+  body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:#f8fafc;margin:0;padding:16px;color:#0b1020}
+  .container{max-width:1120px;margin:0 auto;background:#fff;border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,.10);padding:18px}
+  h1{text-align:center;color:#1d4ed8;margin:6px 0 14px}
+  .top{display:flex;flex-wrap:wrap;gap:10px;align-items:end;justify-content:space-between;margin-bottom:12px}
+  label{font-size:12px;font-weight:600;color:#334155}
+  .inText{border:1px solid #e2e8f0;border-radius:10px;padding:8px 10px;width:260px;text-align:left}
+  .inNum{border:1px solid #e2e8f0;border-radius:10px;padding:7px 10px;width:120px;text-align:right}
+  .inRed{color:#dc2626;border-color:#fecaca;font-weight:800}
+  select{border:1px solid #e2e8f0;border-radius:10px;padding:8px 10px}
+  button{border:none;border-radius:10px;background:#2563eb;color:#fff;font-weight:700;padding:10px 14px;cursor:pointer}
+  button:hover{background:#1e40af}
 
-.grid3{display:grid;grid-template-columns:280px 1fr 1fr}
-.hdr{padding:10px;font-weight:600;color:#fff;text-align:center}
-.hdrL{background:#059669}
-.hdrR{background:#6d28d9}
+  .grid3{display:grid;grid-template-columns:300px 1fr 1fr}
+  .hdr{padding:10px 12px;font-weight:800;color:#fff;text-align:center}
+  .hdrTitle{background:#1d4ed8;text-align:left}
+  .hdrL{background:#059669}
+  .hdrR{background:#6d28d9}
 
-.rowlabel{padding:8px;font-weight:600;border-top:1px solid #e5e7eb;background:#eff6ff}
-.cell{border-top:1px solid #e5e7eb;padding:8px;text-align:right}
-
-input{border:1px solid #e2e8f0;border-radius:8px;padding:6px 8px;width:120px;text-align:right}
-input.text{width:220px;text-align:left}
-input.red{color:#dc2626;border-color:#fecaca;font-weight:700}
-
-select{padding:6px;border-radius:8px}
-button{padding:8px 14px;border:none;border-radius:8px;background:#2563eb;color:#fff;font-weight:600;cursor:pointer}
-button:hover{background:#1e40af}
-
-.bgL{background:#d1fae5}
-.bgR{background:#ede9fe}
-.bold{font-weight:700}
-
-.note{font-size:12px;color:#334155;margin-top:20px}
+  .rowlabel{padding:9px 12px;font-weight:700;border-top:1px solid #e5e7eb;background:#eff6ff}
+  .cell{border-top:1px solid #e5e7eb;padding:8px 10px;text-align:right}
+  .bgL{background:#d1fae5}
+  .bgR{background:#ede9fe}
+  .bold{font-weight:900}
+  .taxRow{color:#dc2626}
+  .outHdr{margin-top:16px;margin-bottom:6px;font-weight:900;color:#0f172a}
+  .note{font-size:12px;color:#334155;margin-top:16px;line-height:1.35}
+  .muted{color:#64748b;font-weight:600}
+  .right{ text-align:right }
+  .center{ text-align:center }
+  @media print { .print-hide{display:none !important} body{background:#fff;padding:0} .container{box-shadow:none} }
 </style>
 </head>
 
 <body>
 <div class="container">
+  <h1>Tarifgegenüberstellung</h1>
 
-<h1>Tarifgegenüberstellung</h1>
-
-<!-- Kopf -->
-<div style="display:flex;flex-wrap:wrap;gap:10px;align-items:end;justify-content:space-between;margin-bottom:12px">
-  <div>
-    <label>Linker Tarif<br>
-      <input class="text" id="labelL" value="Tarif A / Bestand">
-    </label>
-  </div>
-  <div>
-    <label>Rechter Tarif<br>
-      <input class="text" id="labelR" value="Tarif B / Vorschlag">
-    </label>
-  </div>
-  <div>
-    <label>Profil<br>
+  <div class="top">
+    <div>
+      <label>Linker Tarif (Freitext)</label><br />
+      <input id="labelL" class="inText" value="Tarif A / Bestand" />
+    </div>
+    <div>
+      <label>Rechter Tarif (Freitext)</label><br />
+      <input id="labelR" class="inText" value="Tarif B / Vorschlag" />
+    </div>
+    <div>
+      <label>Profil</label><br />
       <select id="profil">
-        <option>Arbeitnehmer</option>
-        <option>Selbstständig</option>
+        <option value="Arbeitnehmer">Arbeitnehmer</option>
+        <option value="Selbstständig">Selbstständig</option>
       </select>
-    </label>
+    </div>
+    <div>
+      <label>Grenzsteuersatz (%)</label><br />
+      <input id="steuer" class="inNum inRed" value="42" />
+    </div>
+    <button class="print-hide" onclick="window.print()">Drucken</button>
   </div>
-  <button onclick="window.print()">Drucken</button>
-</div>
 
-<!-- Tabelle -->
-<div class="grid3">
-  <div class="hdr" style="background:#1d4ed8"></div>
-  <div class="hdr hdrL" id="hdrL">Tarif A</div>
-  <div class="hdr hdrR" id="hdrR">Tarif B</div>
+  <div class="grid3" id="table">
+    <div class="hdr hdrTitle">Position</div>
+    <div class="hdr hdrL" id="hdrL">Tarif A / Bestand</div>
+    <div class="hdr hdrR" id="hdrR">Tarif B / Vorschlag</div>
+    <!-- rows inserted by JS -->
+  </div>
+
+  <div class="outHdr">Ergebnis</div>
+  <div class="grid3" id="out">
+    <!-- results inserted by JS -->
+  </div>
+
+  <div class="note">
+    Der Rechner wurde von Jürgen Matterne erstellt. Es wurde Sorgfalt verwandt, es kann aber keine Gewähr übernommen werden.
+    Fragen bitte an: <a href="mailto:Juergen.Matterne@vk-makler.de">Juergen.Matterne@vk-makler.de</a><br />
+    <span class="muted">
+      Verwendete Rahmendaten: Arbeitgeber-Höchstzuschuss (KV) 508,59 €; Pflegepflicht 104,63 €. Steuerlich ansetzbar: GesundheitVARIO 91,36%, Pflegepflicht 100%.
+    </span>
+  </div>
+</div>
 
 <script>
-const felder=[
-["g","GesundheitVARIO inkl. RZ/GZ"],
-["bea","Beitragsentlastung / BEA"],
-["ppv","Pflegepflichtversicherung"],
-["vap","VARIOAmbulant Plus"],
-["vkp","VARIOKlinik Plus"],
-["vzp","VARIOZahn Plus"],
-["ktg","Krankentagegeld"],
-["kur","Kurtagegeld"],
-["kht","KHT"],
-["pzv","Pflegezusatzversicherung"]
-];
+  // ---- Konfiguration ----
+  // Höchstzuschüsse (AN) – KV und Pflege (wie gewünscht)
+  const CAPS = { kv: 508.59, pflege: 104.63 };
 
-document.write(felder.map(f=>`
-<div class="rowlabel">${f[1]}</div>
-<div class="cell bgL"><input type="number" id="L_${f[0]}" value="0"></div>
-<div class="cell bgR"><input type="number" id="R_${f[0]}" value="0"></div>
-`).join(""));
+  // Felder: key, label, gehört zur KV-Gruppe (AG-Zuschuss möglich) oder Pflegepflicht separat
+  // KV-Gruppe = alles außer Pflegepflicht (ppv) (so wie bisher: 50% bis KV-Cap)
+  const FIELDS = [
+    ["g",   "GesundheitVARIO inkl. RZ/GZ", true],
+    ["bea", "Beitragsentlastung / BEA",    true],
+    ["ppv", "Pflegepflichtversicherung",   false], // separat (50% bis Pflege-Cap)
+    ["vap", "VARIOAmbulant Plus",          true],
+    ["vkp", "VARIOKlinik Plus",            true],
+    ["vzp", "VARIOZahn Plus",              true],
+    ["ktg", "Krankentagegeld",             true],
+    ["kur", "Kurtagegeld",                 true],
+    ["kht", "KHT",                         true],
+    ["pzv", "Pflegezusatzversicherung",    true],
+  ];
+
+  // ---- Helpers ----
+  function toNum(v){
+    const s = String(v ?? "").trim().replace(/\./g,"").replace(",",".");
+    const n = Number(s);
+    return Number.isFinite(n) ? n : 0;
+  }
+  function money(n){
+    return (Number.isFinite(n)?n:0).toLocaleString("de-DE",{minimumFractionDigits:2,maximumFractionDigits:2}) + " €";
+  }
+
+  // ---- UI Render (Input table) ----
+  const table = document.getElementById("table");
+  function buildRows(){
+    let html = "";
+    for (const [k, label] of FIELDS){
+      html += `
+        <div class="rowlabel">${label}</div>
+        <div class="cell bgL"><input class="inNum" id="L_${k}" value="0" inputmode="decimal" /></div>
+        <div class="cell bgR"><input class="inNum" id="R_${k}" value="0" inputmode="decimal" /></div>
+      `;
+    }
+    // Steuer-Zeile wird oben eingegeben; hier nicht nochmal
+    table.insertAdjacentHTML("beforeend", html);
+  }
+  buildRows();
+
+  // ---- Calculation ----
+  function readSide(prefix){
+    const v = {};
+    for (const [k] of FIELDS){
+      v[k] = toNum(document.getElementById(prefix + "_" + k).value);
+    }
+    return v;
+  }
+
+  function sumAll(v){
+    return Object.values(v).reduce((a,b)=>a+b,0);
+  }
+
+  function sumKVGroup(v){
+    // alles "true" (KV-Gruppe) addieren
+    let s = 0;
+    for (const [k,,isKV] of FIELDS){
+      if (isKV) s += v[k];
+    }
+    return s;
+  }
+
+  function abzugsfaehigBasis(v){
+    // Selbstständig: 91,36% von (GesundheitVARIO + BEA) + 100% Pflegepflicht
+    return 0.9136 * (v.g + v.bea) + v.ppv;
+  }
+
+  function arbeitgeberZuschuss(v){
+    // 50% bis Cap (KV-Gruppe) + 50% Pflegepflicht bis Pflege-Cap
+    const kvGroup = sumKVGroup(v);
+    const kv = Math.min(0.5 * kvGroup, CAPS.kv);
+    const pf = Math.min(0.5 * v.ppv, CAPS.pflege);
+    return kv + pf;
+  }
+
+  function computeSide(v, profil, steuersatz){
+    const total = sumAll(v);
+    const abzBasis = abzugsfaehigBasis(v);
+    const s = steuersatz;
+
+    if (profil === "Selbstständig"){
+      const vorSteuer = total;
+      const gutschrift = s * abzBasis;           // Steuerersparnis
+      const nachSteuer = vorSteuer - gutschrift; // Nettobelastung nach Steuer
+      return { vorSteuer, nachSteuer, gutschrift, ag: 0, abzBasis };
+    }
+
+    // Arbeitnehmer:
+    const ag = arbeitgeberZuschuss(v);
+    const vorSteuer = Math.max(0, total - ag);        // Arbeitnehmer zahlt nach AG-Zuschuss
+    const abzAN = Math.max(0, abzBasis - ag);         // abzugsfähiger Arbeitnehmeranteil (wie vorher)
+    const gutschrift = s * abzAN;                     // Steuerersparnis
+    const nachSteuer = vorSteuer - gutschrift;        // Nettobelastung nach Steuer
+    return { vorSteuer, nachSteuer, gutschrift, ag, abzBasis };
+  }
+
+  function render(){
+    const labelL = document.getElementById("labelL").value || "Links";
+    const labelR = document.getElementById("labelR").value || "Rechts";
+    document.getElementById("hdrL").textContent = labelL;
+    document.getElementById("hdrR").textContent = labelR;
+
+    const profil = document.getElementById("profil").value;
+    const steuersatz = Math.max(0, Math.min(100, toNum(document.getElementById("steuer").value))) / 100;
+
+    const L = readSide("L");
+    const R = readSide("R");
+
+    const resL = computeSide(L, profil, steuersatz);
+    const resR = computeSide(R, profil, steuersatz);
+
+    // Output block:
+    // 1) Gesamtbetrag vor Steuer
+    // 2) Gesamtbetrag nach Steuer
+    // 3) Gutschrift nach Steuer (Steuerersparnis)
+    let html = "";
+
+    // Optional: beim Arbeitnehmer zusätzlich AG-Zuschuss anzeigen (hilfreich/transparent)
+    if (profil === "Arbeitnehmer"){
+      html += `
+        <div class="rowlabel">Arbeitgeberzuschuss (berechnet, max. KV ${CAPS.kv.toFixed(2)} / Pflege ${CAPS.pflege.toFixed(2)})</div>
+        <div class="cell bgL bold">-${money(resL.ag).replace(" €","")} €</div>
+        <div class="cell bgR bold">-${money(resR.ag).replace(" €","")} €</div>
+      `;
+    }
+
+    html += `
+      <div class="rowlabel bold">Gesamtbetrag vor Steuer</div>
+      <div class="cell bgL bold">${money(resL.vorSteuer)}</div>
+      <div class="cell bgR bold">${money(resR.vorSteuer)}</div>
+
+      <div class="rowlabel bold">Gesamtbetrag nach Steuer</div>
+      <div class="cell bold" style="background:#047857;color:#fff">${money(resL.nachSteuer)}</div>
+      <div class="cell bold" style="background:#6d28d9;color:#fff">${money(resR.nachSteuer)}</div>
+
+      <div class="rowlabel bold">Gutschrift nach Steuer</div>
+      <div class="cell bgL bold">${money(resL.gutschrift)}</div>
+      <div class="cell bgR bold">${money(resR.gutschrift)}</div>
+    `;
+
+    document.getElementById("out").innerHTML = html;
+  }
+
+  // Bind events
+  const allInputs = document.querySelectorAll("input, select");
+  allInputs.forEach(el => el.addEventListener("input", render));
+  render();
 </script>
 
-<!-- Steuer -->
-<div class="rowlabel" style="color:#dc2626">Grenzsteuersatz</div>
-<div class="cell"><input id="steuer" class="red" value="42"></div>
-<div class="cell"></div>
-</div>
-
-<!-- Ergebnis -->
-<div id="out" style="margin-top:20px"></div>
-
-<script>
-function n(v){return parseFloat(v)||0}
-function f(x){return x.toLocaleString("de-DE",{minimumFractionDigits:2,maximumFractionDigits:2})}
-
-function calc(){
- const profil=document.getElementById("profil").value;
- const s=n(steuer.value)/100;
-
- const L={},R={};
- felder.forEach(f=>{
-   L[f[0]]=n(document.getElementById("L_"+f[0]).value);
-   R[f[0]]=n(document.getElementById("R_"+f[0]).value);
- });
-
- const sumL=Object.values(L).reduce((a,b)=>a+b,0);
- const sumR=Object.values(R).reduce((a,b)=>a+b,0);
-
- const abzL=0.9136*(L.g+L.bea)+L.ppv;
- const abzR=0.9136*(R.g+R.bea)+R.ppv;
-
- const caps={group:508.59,care:104.63};
-
- const grpL=L.g+L.bea+L.vap+L.vkp+L.vzp+L.ktg+L.kur+L.kht+L.pzv;
- const grpR=R.g+R.bea+R.vap+R.vkp+R.vzp+R.ktg+R.kur+R.kht+R.pzv;
-
- const agL=Math.min(0.5*grpL,caps.group)+Math.min(0.5*L.ppv,caps.care);
- const agR=Math.min(0.5*grpR,caps.group)+Math.min(0.5*R.ppv,caps.care);
-
- let nettoL,nettoR;
-
- if(profil==="Arbeitnehmer"){
-   nettoL=(sumL-agL)-(s*Math.max(0,abzL-agL));
-   nettoR=(sumR-agR)-(s*Math.max(0,abzR-agR));
- } else {
-   nettoL=sumL-(s*abzL);
-   nettoR=sumR-(s*abzR);
- }
-
- const diff=nettoR-nettoL;
-
- document.getElementById("hdrL").innerText=labelL.value;
- document.getElementById("hdrR").innerText=labelR.value;
-
- out.innerHTML=`
- <div class="grid3">
-   <div class="rowlabel bold">Gesamtbetrag nach Steuer</div>
-   <div class="cell bold bgL">${f(nettoL)} €</div>
-   <div class="cell bold bgR">${f(nettoR)} €</div>
-
-   <div class="rowlabel bold">Gutschrift nach Steuer</div>
-   <div></div>
-   <div class="cell bold">${f(diff)} €</div>
- </div>`;
-}
-
-document.querySelectorAll("input,select").forEach(e=>e.addEventListener("input",calc));
-calc();
-</script>
-
-<div class="note">
-Der Rechner wurde von Jürgen Matterne erstellt. Es wurde Sorgfalt verwandt, es kann aber keine Gewähr übernommen werden.
-Fragen bitte an: <a href="mailto:Juergen.Matterne@vk-makler.de">Juergen.Matterne@vk-makler.de</a><br>
-Arbeitgeber-Höchstzuschuss (AN): 508,59 € KV / 104,63 € Pflege. Steuerlich ansetzbar: GesundheitVARIO 91,36 %, Pflegepflicht 100 %.
-</div>
-
-</div>
 </body>
 </html>
-
-
